@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: root:argoproj.io/ApplicationSet:argocd/core-components
+  name: helmfile-core-components
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        files:
+          - path: with-helmfile/core-components/**/config.json
+        repoURL: https://github.com/yohanb/charts-refactor
+        revision: HEAD
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  template:
+    metadata:
+      name: 'helmfile-{{.path.basename}}'
+    spec:
+      destination:
+        namespace: '{{.namespace}}'
+        server: '{{.destination.server}}'
+      ignoreDifferences:
+        - group: admissionregistration.k8s.io
+          jqPathExpressions:
+            - .webhooks[].failurePolicy
+          kind: ValidatingWebhookConfiguration
+      project: '{{.project}}'
+      source:
+        path: '{{.path.path}}'
+        repoURL: https://github.com/yohanb/charts-refactor
+        targetRevision: '{{.source.targetRevision}}'
+      syncPolicy:
+        syncOptions:
+          - ServerSideApply=true

@@ -1,0 +1,12 @@
+directory: charts
+repositories:
+- name: stable
+  url: https://charts.helm.sh/stable
+- name: istio
+  url: https://istio-release.storage.googleapis.com/charts
+requires:
+- chart: istio/istiod
+  version: 1.26.0
+- chart: istio/base
+  version: 1.26.0
+version: 1

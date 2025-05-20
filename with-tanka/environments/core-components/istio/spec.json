@@ -1,0 +1,22 @@
+{
+  "apiVersion": "tanka.dev/v1alpha1",
+  "kind": "Environment",
+  "spec": {
+    "namespace": "tanka-istio",
+    "resourceDefaults": {},
+    "expectVersions": {}
+  },
+  "data": {
+    "argocd": {
+      "app": {
+        "project": "default",
+        "source": {
+          "targetRevision": "HEAD"
+        },
+        "destination": {
+          "server": "https://kubernetes.default.svc"
+        }
+      }
+    }
+  }
+}
