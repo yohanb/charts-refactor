@@ -1,0 +1,29 @@
+projects:
+ root:
+   namespace: argocd
+   permitOnlyProjectScopedClusters: false
+   finalizers:
+   - resources-finalizer.argocd.argoproj.io
+   description: Root Project
+   sourceRepos:
+   - https://github.com/yohanb/charts-refactor.git
+   destinations:
+   - namespace: argocd
+     server: https://kubernetes.default.svc
+applications:
+  root:
+    namespace: argocd
+    project: default
+    source:
+      repoURL: https://github.com/yohanb/charts-refactor.git
+      targetRevision: helmfile
+      path: apps/root
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: false
+      syncOptions:
+      - CreateNamespace=true

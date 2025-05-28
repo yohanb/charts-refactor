@@ -1,0 +1,17 @@
+applications:
+  core-components:
+    namespace: argocd
+    project: default
+    source:
+      repoURL: https://github.com/yohanb/charts-refactor.git
+      targetRevision: helmfile
+      path: apps/core-components
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: core-components
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: false
+      syncOptions:
+      - CreateNamespace=true

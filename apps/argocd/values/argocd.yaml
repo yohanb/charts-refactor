@@ -1,0 +1,12 @@
+configs:
+  params:
+    server.insecure: true
+    server.disable.auth: true
+dex:
+  image:
+    repository: 'ghcr.io/dexidp/dex'
+    tag: 'v2.41.1'
+redis:
+  image:
+    repository: 'redis'
+    tag: '7.4.3'

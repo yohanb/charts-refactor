@@ -1,0 +1,13 @@
+repositories:
+ - name: istio
+   url: https://istio-release.storage.googleapis.com/charts
+
+releases:
+- name: base
+  namespace: argocd
+  chart: istio/base
+  version: 1.26.0
+- name: istiod
+  namespace: argocd
+  chart: istio/istiod
+  version: 1.26.0

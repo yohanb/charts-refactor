@@ -1,0 +1,54 @@
+configs:
+  cmp:
+    create: true
+    plugins:
+      helmfile-cmp:
+        generate:
+          command: [sh, -c]
+          args:
+            - |
+              if [[ -v ENV_NAME ]]; then
+                helmfile -n "$ARGOCD_APP_NAMESPACE" -e $ENV_NAME template --include-crds -q
+              elif [[ -v ARGOCD_ENV_ENV_NAME ]]; then
+                helmfile -n "$ARGOCD_APP_NAMESPACE" -e "$ARGOCD_ENV_ENV_NAME" template --include-crds -q
+              else
+                helmfile -n "$ARGOCD_APP_NAMESPACE" template --include-crds -q
+              fi
+        discover:
+          fileName: "helmfile.yaml*"
+repoServer:
+  extraContainers:
+  - name: helmfile-cmp
+    image: ghcr.io/helmfile/helmfile
+    securityContext:
+      runAsUser: 999
+    command:
+    - /var/run/argocd/argocd-cmp-server
+    env:
+    - name: HELM_CACHE_HOME
+      value: /tmp/helm/cache
+    - name: HELM_CONFIG_HOME
+      value: /tmp/helm/config
+    - name: HELMFILE_CACHE_HOME
+      value: /tmp/helmfile/cache
+    - name: HELMFILE_TEMPDIR
+      value: /tmp/helmfile/tmp
+    envFrom:
+      - configMapRef:
+          name: argocd-cmp-env-cm
+    volumeMounts:
+    - mountPath: /var/run/argocd
+      name: var-files
+    - mountPath: /home/argocd/cmp-server/plugins
+      name: plugins
+    - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+      name: argocd-cmp-cm
+      subPath: helmfile-cmp.yaml
+    - mountPath: /tmp
+      name: cmp-tmp
+  volumes:
+  - name: cmp-tmp
+    emptyDir: {}
+  - name: argocd-cmp-cm
+    configMap:
+      name: argocd-cmp-cm

@@ -1,0 +1,18 @@
+repositories:
+ - name: argo
+   url: https://argoproj.github.io/argo-helm
+
+releases:
+- name: istio-argocd
+  namespace: argocd
+  chart: argo/argocd-apps
+  version: 2.0.2
+  values:
+    - istio.yaml
+- name: keda-argocd
+  namespace: argocd
+  chart: argo/argocd-apps
+  version: 2.0.2
+  installed: {{ requiredEnv "CLUSTER_TYPE" | upper | trim | eq "HOSTING" }}
+  values:
+    - keda.yaml
