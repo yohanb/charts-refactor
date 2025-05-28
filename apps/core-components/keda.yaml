@@ -1,0 +1,35 @@
+projects:
+ keda:
+    namespace: argocd
+    permitOnlyProjectScopedClusters: false
+    finalizers:
+    - resources-finalizer.argocd.argoproj.io
+    description: keda Project
+    clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    destinations:
+    - namespace: keda
+      server: https://kubernetes.default.svc
+    - namespace: kube-system
+      server: https://kubernetes.default.svc
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    sourceRepos:
+    - https://github.com/yohanb/charts-refactor.git
+applications:
+  keda:
+    namespace: argocd
+    project: keda
+    source:
+      repoURL: https://github.com/yohanb/charts-refactor.git
+      targetRevision: helmfile
+      path: apps/keda
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: keda
+    syncPolicy:
+      syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

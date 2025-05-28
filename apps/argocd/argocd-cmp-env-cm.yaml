@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  CLUSTER_NAME: docker-desktop
+  CLUSTER_TYPE: management
+  ENVIRONMENT: dev
+  REGION: us-east-1
+metadata:
+  name: argocd-cmp-env-cm
+  namespace: argocd
